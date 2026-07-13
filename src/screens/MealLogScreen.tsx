@@ -19,6 +19,8 @@ interface MealLogScreenProps {
 export default function MealLogScreen({ onMealLogged }: MealLogScreenProps) {
   const { addMeal } = useMealStore();
   const [selectedEnergy, setSelectedEnergy] = useState<'low' | 'medium' | 'high' | null>(null);
+  const [selectedMood, setSelectedMood] = useState<'great' | 'good' | 'okay' | 'bad' | null>(null);
+  const [notes, setNotes] = useState('');
   const [isLogging, setIsLogging] = useState(false);
 
   useEffect(() => {
@@ -32,6 +34,8 @@ export default function MealLogScreen({ onMealLogged }: MealLogScreenProps) {
         id: Date.now().toString(),
         timestamp: Date.now(),
         energyLevel: selectedEnergy || undefined,
+        mood: selectedMood || undefined,
+        notes: notes.trim() || undefined,
       };
 
       await addMeal(newMeal);
