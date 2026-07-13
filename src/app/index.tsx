@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { useMealStore, loadMeals } from '@/store/mealStore';
+import { useThemeStore } from '@/store/themeStore';
+import { getTheme } from '@/utils/themes';
 import TodayScreen from '@/screens/TodayScreen';
 import MealLogScreen from '@/screens/MealLogScreen';
 import WeeklyStatsScreen from '@/screens/WeeklyStatsScreen';
@@ -16,14 +18,17 @@ export default function HomeScreen() {
   const [currentScreen, setCurrentScreen] = useState<Screen>('today');
   const [isLoading, setIsLoading] = useState(true);
   const { getMealsForToday } = useMealStore();
+  const { isDark, initTheme } = useThemeStore();
+  const theme = getTheme(isDark);
 
   useEffect(() => {
-    const initializeMeals = async () => {
+    const initializeApp = async () => {
       await loadMeals();
+      await initTheme();
       setIsLoading(false);
     };
-    initializeMeals();
-  }, []);
+    initializeApp();
+  }, [initTheme]);
 
   const handleMealLogged = () => {
     setCurrentScreen('today');
@@ -34,7 +39,7 @@ export default function HomeScreen() {
   }
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: theme.background }]}>
       {currentScreen === 'today' ? (
         <TodayScreen
           onNavigateToLog={() => setCurrentScreen('log')}

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import {
   View,
   Text,
@@ -9,6 +9,8 @@ import {
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useMealStore } from '@/store/mealStore';
+import { useThemeStore } from '@/store/themeStore';
+import { getTheme } from '@/utils/themes';
 import { calculateNextMealTime, formatTime, getTimeUntil, getNextMealName } from '@/utils/mealTiming';
 import MealEntry from '@/screens/MealEntry';
 import { requestNotificationPermissions, scheduleNextMealNotification } from '@/utils/notifications';
@@ -33,6 +35,8 @@ export default function TodayScreen({
   onNavigateToCalendar,
 }: TodayScreenProps) {
   const { getMealsForToday } = useMealStore();
+  const { isDark, toggleTheme } = useThemeStore();
+  const theme = useMemo(() => getTheme(isDark), [isDark]);
   const [todayMeals, setTodayMeals] = useState<any[]>([]);
   const [nextMealInfo, setNextMealInfo] = useState<any>(null);
   const [timeUntil, setTimeUntil] = useState<string>('');
@@ -81,11 +85,17 @@ export default function TodayScreen({
   }, [nextMealInfo]);
 
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView contentContainerStyle={styles.content}>
+    <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]}>
+      <ScrollView contentContainerStyle={[styles.content, { backgroundColor: theme.background }]}>
         <View style={styles.header}>
-          <Text style={styles.title}>Today's Meals</Text>
+          <Text style={[styles.title, { color: theme.text }]}>Today's Meals</Text>
           <View style={styles.headerButtons}>
+            <TouchableOpacity
+              style={[styles.headerButton, { backgroundColor: theme.surface }]}
+              onPress={toggleTheme}
+            >
+              <Text style={styles.headerButtonText}>{isDark ? '☀️' : '🌙'}</Text>
+            </TouchableOpacity>
             <TouchableOpacity
               style={styles.headerButton}
               onPress={onNavigateToReminders}
@@ -135,7 +145,7 @@ export default function TodayScreen({
 
         {todayMeals.length === 0 ? (
           <View style={styles.emptyState}>
-            <Text style={styles.emptyText}>No meals logged yet</Text>
+            <Text style={[styles.emptyText, { color: theme.textMuted }]}>No meals logged yet</Text>
             <TouchableOpacity style={styles.primaryButton} onPress={onNavigateToLog}>
               <Text style={styles.buttonText}>Log Your First Meal</Text>
             </TouchableOpacity>
