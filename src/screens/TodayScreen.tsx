@@ -17,9 +17,21 @@ interface TodayScreenProps {
   onNavigateToLog: () => void;
   onNavigateToStats: () => void;
   onNavigateToReminders: () => void;
+  onNavigateToGoals: () => void;
+  onNavigateToHistory: () => void;
+  onNavigateToFasting: () => void;
+  onNavigateToCalendar: () => void;
 }
 
-export default function TodayScreen({ onNavigateToLog, onNavigateToStats, onNavigateToReminders }: TodayScreenProps) {
+export default function TodayScreen({
+  onNavigateToLog,
+  onNavigateToStats,
+  onNavigateToReminders,
+  onNavigateToGoals,
+  onNavigateToHistory,
+  onNavigateToFasting,
+  onNavigateToCalendar,
+}: TodayScreenProps) {
   const { getMealsForToday } = useMealStore();
   const [todayMeals, setTodayMeals] = useState<any[]>([]);
   const [nextMealInfo, setNextMealInfo] = useState<any>(null);
@@ -87,6 +99,38 @@ export default function TodayScreen({ onNavigateToLog, onNavigateToStats, onNavi
               <Text style={styles.headerButtonText}>📊</Text>
             </TouchableOpacity>
           </View>
+        </View>
+
+        {/* Quick Menu */}
+        <View style={styles.quickMenu}>
+          <TouchableOpacity
+            style={styles.menuItem}
+            onPress={onNavigateToGoals}
+          >
+            <Text style={styles.menuIcon}>🎯</Text>
+            <Text style={styles.menuLabel}>Goals</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.menuItem}
+            onPress={onNavigateToHistory}
+          >
+            <Text style={styles.menuIcon}>📋</Text>
+            <Text style={styles.menuLabel}>History</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.menuItem}
+            onPress={onNavigateToFasting}
+          >
+            <Text style={styles.menuIcon}>⏱️</Text>
+            <Text style={styles.menuLabel}>Fasting</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.menuItem}
+            onPress={onNavigateToCalendar}
+          >
+            <Text style={styles.menuIcon}>📅</Text>
+            <Text style={styles.menuLabel}>Calendar</Text>
+          </TouchableOpacity>
         </View>
 
         {todayMeals.length === 0 ? (
@@ -166,6 +210,27 @@ const styles = StyleSheet.create({
   },
   headerButtonText: {
     fontSize: 16,
+  },
+  quickMenu: {
+    flexDirection: 'row',
+    gap: 8,
+    marginBottom: 24,
+  },
+  menuItem: {
+    flex: 1,
+    alignItems: 'center',
+    paddingVertical: 12,
+    backgroundColor: '#f9f9f9',
+    borderRadius: 8,
+  },
+  menuIcon: {
+    fontSize: 18,
+    marginBottom: 4,
+  },
+  menuLabel: {
+    fontSize: 11,
+    fontWeight: '600',
+    color: '#333',
   },
   emptyState: {
     alignItems: 'center',
